@@ -52,14 +52,14 @@
     .carousel {
       position: relative;
       width: 100%;
-      height: 300px;
+      height: 600px; /* 高度加倍 */
       overflow: hidden;
     }
 
     .carousel img {
       position: absolute;
       width: 100%;
-      height: 300px;
+      height: 600px;
       object-fit: cover;
       opacity: 0;
       transition: opacity 1s ease-in-out;
@@ -67,6 +67,32 @@
 
     .carousel img.active {
       opacity: 1;
+    }
+
+    .carousel .arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255, 255, 255, 0.6);
+      border: none;
+      font-size: 2em;
+      padding: 0.2em 0.5em;
+      cursor: pointer;
+      z-index: 10;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+
+    .carousel .arrow:hover {
+      background: rgba(255, 255, 255, 0.8);
+    }
+
+    .arrow.left {
+      left: 10px;
+    }
+
+    .arrow.right {
+      right: 10px;
     }
 
     section {
@@ -133,9 +159,11 @@
 
 <!-- 圖片輪播 -->
 <div class="carousel">
-  <img src="https://github.com/CHLOE0428/XSST/blob/main/img1.png" class="active" alt="">
-  <img src="https://github.com/CHLOE0428/XSST/blob/main/img2.jpg" alt="">
-  <img src="https://github.com/CHLOE0428/XSST/blob/main/img3.jpg" alt="">
+  <button class="arrow left">&#9664;</button>
+  <button class="arrow right">&#9654;</button>
+  <img src="img1.png" class="active" alt="">
+  <img src="img2.jpg" alt="">
+  <img src="img3.jpg" alt="">
 </div>
 
 <section>
@@ -168,24 +196,57 @@
 <section id="about">
   <h2>🍜 開業由來</h2>
   <p>
-    這家位於志學街的餐廳，是一間由七位兼職員工共同經營的小型餐飲業者，主要服務對象為鄰近的東華大學學生。雖然創立初衷直白，目的是為了營利，但我們從不否認這個現實，反而更誠實地面對經營的每一個選擇。當初選擇在志學街落腳，不只是因為看準了這裡的人流與消費潛力，更是因為我們相信，學生的青春歲月值得被好好照顧——不只是用熱騰騰的飯菜，也包括一個讓人可以喘口氣、感到安心的地方。
-
-    餐廳沒有華麗的裝潢，也沒有繁複的菜單。我們每天所做的，是用最實在的食材、最熟悉的味道，把家裡廚房的溫度帶到學生們的生活中。無論是剛下課匆匆趕來用餐的學生，還是加班後疲憊走進來的研究生，我們都希望他們能在這裡，找到一點點家的慰藉。我們始終相信，餐飲不只是交易，而是一種交流與連結。我們希望，每一位走進來的顧客，都能感受到那份熟悉的味道與真誠的心意——就像回到家一樣，無需多說，就知道自己被理解、被照顧。
-
+    這家位於志學街的餐廳，是一間由七位兼職員工共同經營的小型餐飲業者，主要服務對象為鄰近的東華大學學生。雖然創立初衷直白，目的是為了營利，但我們從不否認這個現實，反而更誠實地面對經營的每一個選擇。
+    ...
     這不只是一間餐廳，這是我們與你們，一起築起的小小避風港。
   </p>
 </section>
 
 <script>
-  // 圖片輪播功能
   const images = document.querySelectorAll('.carousel img');
+  const leftBtn = document.querySelector('.arrow.left');
+  const rightBtn = document.querySelector('.arrow.right');
   let currentIndex = 0;
+  let interval;
 
-  setInterval(() => {
-    images[currentIndex].classList.remove('active');
+  function showImage(index) {
+    images.forEach(img => img.classList.remove('active'));
+    images[index].classList.add('active');
+  }
+
+  function nextImage() {
     currentIndex = (currentIndex + 1) % images.length;
-    images[currentIndex].classList.add('active');
-  }, 3000); // 每 3 秒換一張
+    showImage(currentIndex);
+  }
+
+  function prevImage() {
+    currentIndex = (currentIndex - 1 + images.length) % images.length;
+    showImage(currentIndex);
+  }
+
+  // 自動播放
+  function startCarousel() {
+    interval = setInterval(nextImage, 3000);
+  }
+
+  function resetCarousel() {
+    clearInterval(interval);
+    startCarousel();
+  }
+
+  // 左右按鈕事件
+  leftBtn.addEventListener('click', () => {
+    prevImage();
+    resetCarousel();
+  });
+
+  rightBtn.addEventListener('click', () => {
+    nextImage();
+    resetCarousel();
+  });
+
+  // 初始化
+  startCarousel();
 </script>
 
 </body>
